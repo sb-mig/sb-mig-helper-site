@@ -1,22 +1,41 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import styled from "styled-components"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Checkbox from "../components/Checkbox"
 
-const divStyle = { marginBottom: "64px" }
-const inputStyle = { marginLeft: "24px" }
-const containerStyle = {
-  padding: "20px",
-  display: "flex",
-  flexWrap: "wrap",
-  width: "100%",
-}
-const itemStyle = {
-  width: "25%",
-  padding: "12px",
-  border: "1px solid gray",
-}
+const StyledDiv = styled.div`
+  margin-bottom: 64px;
+`
+const StyledInput = styled.input`
+  margin-left: 24px;
+  width: 100%;
+`
+
+const StyledContainer = styled.div`
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+`
+
+const StyledSpan = styled.span`
+  margin-left: 8px;
+`
+
+const StyledLabel = styled.label`
+  padding: 18px;
+  display: block;
+
+  :hover {
+    background-color: antiquewhite;
+  }
+`
+
+const StyledItem = styled.div`
+  background-color: aliceblue;
+  margin: 4px;
+`
 
 const listOfAvailableComponents = [
   {
@@ -41,26 +60,8 @@ const listOfAvailableComponents = [
   },
 ]
 
-const StyledSpan = styled.span`
-  margin-left: 8px;
-`
-
-const StyledLabel = styled.label`
-  padding: 18px;
-  display: block;
-
-  :hover {
-    background-color: antiquewhite;
-  }
-`
-
-const StyledItem = styled.div`
-  background-color: aliceblue;
-
-  margin: 4px;
-`
-
 const IndexPage = () => {
+  const preToCopy = useRef(null)
   const [commandToSbMig, setCommandToSbMig] = useState(
     "npx sb-mig --generate awesome-project"
   )
@@ -71,6 +72,17 @@ const IndexPage = () => {
   const [sbComponentRepo, setSbComponentRepo] = useState(
     "https://github.com/marckraw/gatsby-storyblok-component-repo"
   )
+
+  const copyCommand = () => {
+    const textArea = document.createElement("textarea")
+    textArea.value = preToCopy.current.textContent
+    textArea.style.position = "fixed" //avoid scrolling to bottom
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+    document.execCommand("copy")
+    document.body.removeChild(textArea)
+  }
 
   const generateCommand = () => {
     const selectedComponents =
@@ -96,11 +108,9 @@ const IndexPage = () => {
   return (
     <Layout>
       <SEO title="Home" />
-      <h1>Index page</h1>
-      <div style={divStyle}>
+      <StyledDiv>
         <label htmlFor="boilerplate">Enter your boilerplate url</label>
-        <input
-          style={inputStyle}
+        <StyledInput
           onChange={e => setBoilerplateUrl(e.target.value)}
           type="text"
           id="boilerplate"
@@ -110,13 +120,12 @@ const IndexPage = () => {
           {" "}
           (default: https://github.com/marckraw/gatsby-storyblok-boilerplate)
         </h6>
-      </div>
-      <div style={divStyle}>
+      </StyledDiv>
+      <StyledDiv>
         <label htmlFor="storyblok-component-repository">
           Enter your storyblok component repository url
         </label>
-        <input
-          style={inputStyle}
+        <StyledInput
           onChange={e => setSbComponentRepo(e.target.value)}
           type="text"
           id="storyblok-component-repository"
@@ -125,9 +134,9 @@ const IndexPage = () => {
         <h6>
           (default: https://github.com/marckraw/gatsby-storyblok-component-repo)
         </h6>
-      </div>
+      </StyledDiv>
       <h2>Choose your component</h2>
-      <div style={containerStyle}>
+      <StyledContainer>
         {listOfAvailableComponents.map(component => {
           return (
             <StyledItem key={component.id}>
@@ -142,13 +151,14 @@ const IndexPage = () => {
             </StyledItem>
           )
         })}
-      </div>
+      </StyledContainer>
       <div>
         <button onClick={generateCommand}>Generate command</button>
       </div>
       <div>
         <h3>Copy that command to your terminal</h3>
-        <pre>{commandToSbMig}</pre>
+        <button onClick={copyCommand}>COPY</button>
+        <pre ref={preToCopy}> {commandToSbMig} </pre>
       </div>
     </Layout>
   )
