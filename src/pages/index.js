@@ -62,8 +62,12 @@ const listOfAvailableComponents = [
 
 const IndexPage = () => {
   const preToCopy = useRef(null)
+  const npmComponentsCommand = useRef(null)
   const [commandToSbMig, setCommandToSbMig] = useState(
     "npx sb-mig --generate awesome-project"
+  )
+  const [commandToNpm, setCommandToNpm] = useState(
+    "npm install --save component"
   )
   const [componentsList, setComponentsList] = useState({})
   const [boilerplateUrl, setBoilerplateUrl] = useState(
@@ -84,6 +88,17 @@ const IndexPage = () => {
     document.body.removeChild(textArea)
   }
 
+  const copyNpmComponentsCommand = () => {
+    const textArea = document.createElement("textarea")
+    textArea.value = npmComponentsCommand.current.textContent
+    textArea.style.position = "fixed" //avoid scrolling to bottom
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+    document.execCommand("copy")
+    document.body.removeChild(textArea)
+  }
+
   const generateCommand = () => {
     const selectedComponents =
       Object.entries(componentsList).length > 0 &&
@@ -94,8 +109,18 @@ const IndexPage = () => {
         ? selectedComponents.reduce((prev, next) => `${prev}${next[0]} `, "")
         : ""
 
-    const command = `npx sb-mig --generate --boilerplate ${boilerplateUrl} --componentRepo ${sbComponentRepo} --add ${stringifiedSelectedComponent}`
-    setCommandToSbMig(command)
+    const stringifiedNpmeSelectedComponents =
+      selectedComponents.length > 0
+        ? selectedComponents.reduce(
+            (prev, next) => `${prev}@storyblok-components/${next[0]} `,
+            ""
+          )
+        : ""
+
+    const commandToSbMig = `npx sb-mig --generate --boilerplate ${boilerplateUrl} --componentRepo ${sbComponentRepo} --add ${stringifiedSelectedComponent}`
+    const tempCommandToNpm = `npm install --save ${stringifiedNpmeSelectedComponents}`
+    setCommandToSbMig(commandToSbMig)
+    setCommandToNpm(tempCommandToNpm)
   }
 
   const handleCheckboxChange = event => {
@@ -157,8 +182,14 @@ const IndexPage = () => {
       </div>
       <div>
         <h3>Copy that command to your terminal</h3>
-        <button onClick={copyCommand}>COPY</button>
-        <pre ref={preToCopy}> {commandToSbMig} </pre>
+        <div>
+          <button onClick={copyCommand}>COPY</button>
+          <pre ref={preToCopy}> {commandToSbMig} </pre>
+        </div>
+        <div>
+          <button onClick={copyNpmComponentsCommand}>COPY</button>
+          <pre ref={npmComponentsCommand}> {commandToNpm} </pre>
+        </div>
       </div>
     </Layout>
   )
