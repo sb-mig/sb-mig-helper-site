@@ -26,7 +26,7 @@ const Header = ({ siteTitle }) => (
   <StyledHeader>
     <StyledContainer>
       <StyledH1>
-        <StyledLink to="/">{siteTitle}</StyledLink>
+        <StyledLink to="/">{siteTitle} - preview, is not ready yet</StyledLink>
       </StyledH1>
     </StyledContainer>
   </StyledHeader>
