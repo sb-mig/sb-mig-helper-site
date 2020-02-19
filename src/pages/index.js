@@ -74,7 +74,7 @@ const IndexPage = () => {
     "https://github.com/marckraw/gatsby-storyblok-boilerplate"
   )
   const [sbComponentRepo, setSbComponentRepo] = useState(
-    "https://github.com/marckraw/gatsby-storyblok-component-repo"
+    "@storyblok-components"
   )
 
   const copyCommand = () => {
@@ -112,7 +112,7 @@ const IndexPage = () => {
     const stringifiedNpmeSelectedComponents =
       selectedComponents.length > 0
         ? selectedComponents.reduce(
-            (prev, next) => `${prev}@storyblok-components/${next[0]} `,
+            (prev, next) => `${prev}${sbComponentRepo}/${next[0]} `,
             ""
           )
         : ""
@@ -148,7 +148,7 @@ const IndexPage = () => {
       </StyledDiv>
       <StyledDiv>
         <label htmlFor="storyblok-component-repository">
-          Enter your storyblok component repository url
+          Enter your storyblok component repository
         </label>
         <StyledInput
           onChange={e => setSbComponentRepo(e.target.value)}
@@ -157,7 +157,7 @@ const IndexPage = () => {
           name="storyblok-component-repository"
         />
         <h6>
-          (default: https://github.com/marckraw/gatsby-storyblok-component-repo)
+          (default: @storyblok-components)
         </h6>
       </StyledDiv>
       <h2>Choose your component</h2>
